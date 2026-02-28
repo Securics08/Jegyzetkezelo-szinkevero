@@ -242,6 +242,14 @@
   editor.addEventListener("paste", e => { 
     e.preventDefault(); 
     const text = (e.clipboardData || window.clipboardData).getData("text/plain"); 
+    
+    // JAVÍTÁS: Ha kódnak tűnik (tartalmaz < vagy > jelet), akkor tiszta neon szövegként szúrjuk be, link felismerés nélkül.
+    if (text.includes('<') || text.includes('>')) {
+        const safeText = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/ /g, "&nbsp;").replace(/\n/g, "<br>");
+        insertHTMLAtCursor(`<span class="${activeColorClass}">${safeText}</span>`);
+        return;
+    }
+
     const urlPattern = /(https?:\/\/[^\s]+)/gi;
     let htmlResult = "";
     const lines = text.split(/\r?\n/);
@@ -294,14 +302,12 @@
         lastFileDisplay.innerHTML = `<span class="label-red">Utolsó fájl:</span> <span class="label-green">${fileName}</span>`; } catch(e) { alert("Hiba!"); }
   } 
 
-  // --- JAVÍTOTT PDF FF FUNKCIÓ ---
   async function downloadPDF(isColor) {
     const { jsPDF } = window.jspdf; 
     const helperWrap = document.getElementById("pdf-helper-wrap"); 
     const captureNode = document.createElement("div"); 
     captureNode.className = "pdf-capture-node"; 
     
-    // Háttér beállítása
     const isLight = document.body.classList.contains("light-mode"); 
     const bg = (isColor && !isLight) ? "#050505" : "#ffffff"; 
     captureNode.style.background = bg;
@@ -309,7 +315,6 @@
     captureNode.appendChild(editorHeader.cloneNode(true)); 
     captureNode.appendChild(editor.cloneNode(true)); 
     
-    // HA FEKETE-FEHÉR (FF), akkor minden színes elemet átszínezünk
     if(!isColor) {
         captureNode.querySelectorAll("span, a, div").forEach(el => {
             el.style.setProperty("color", "black", "important");
