@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-<meta charset="UTF-8"> <title>Neon Jegyzet - Link & PDF Fix</title> 
+<meta charset="UTF-8"> <title>Neon Jegyzet - Full Font & Color Fix</title> 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script> 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Monoton&family=Pinyon+Script&family=Nabla&family=Bungee+Shade&family=Ewert&family=Vast+Shadow&family=Creepster&family=Lobster&family=Righteous&family=Faster+One&family=Special+Elite&family=Orbitron&family=Pacifico&family=Press+Start+2P&family=Permanent+Marker&family=Sacramento&family=Silkscreen&family=Codystar&family=Megrim&family=Fredericka+the+Great&family=UnifrakturMaguntia&family=Wallpoet&family=Syncopate&family=Fascinate+Inline&family=Nosifer&family=Rubik+Glitch&family=Bangers&family=Alumni+Sans+Inline+One&family=Iceberg&family=Glass+Antiqua&family=Kranky&family=Great+Vibes&family=Bruno+Ace+SC&family=VT323&family=Montserrat&family=Nunito&family=Oswald&family=Playfair+Display&family=Spectral&family=Ultra&family=Varela+Round&family=Alegreya&family=Roboto+Serif&family=Roboto+Mono&display=swap" rel="stylesheet"> 
@@ -22,7 +22,10 @@
 
   #captureArea { flex:1; background:#050505; border:1px solid #333; border-radius:6px; display:flex; flex-direction:column; overflow-y:auto; position: relative; }
   #editorHeader { padding: 10px; font-size: 18px; min-height: 30px; margin-bottom: 5px; border-bottom: 1px dashed #333; }
-  .editor{ flex:1; padding:10px; overflow-y:auto; font-size:18px; white-space: pre-wrap; word-wrap: break-word; word-break: break-word; min-height: 100%; outline: none; }
+  
+  /* SŰRŰ SORKÖZ FIX: A tartalom sűrű marad */
+  .editor{ flex:1; padding:10px; overflow-y:auto; font-size:18px; white-space: pre-wrap; word-wrap: break-word; word-break: break-word; min-height: 100%; outline: none; line-height: 1.0 !important; }
+  .editor div { margin: 0 !important; padding: 0 !important; min-height: 1.0em !important; line-height: 1.0 !important; }
 
   .neon-black{ color:#000000 !important; text-shadow:none !important; } 
   .neon-orange{ color:#ff6600 !important; text-shadow:0 0 5px #ff6600,0 0 10px #ff6600,0 0 15px #ff6600,0 0 20px #ff6600 !important; }
@@ -46,7 +49,6 @@
   #glowBtn.off { background: #ff0000 !important; color: #fff !important; font-weight: bold; } 
 
   .editor a { cursor: pointer !important; text-decoration: underline !important; display: inline-block; }
-
   .saved-panel{ width:300px; background:#222; padding:20px; box-sizing:border-box; display: flex; flex-direction: column; overflow-y:auto; } 
   .saved-panel h3{ color:#00f6ff; margin-top:0; } 
   #savedList { flex: 1; overflow-y: auto; } 
@@ -156,8 +158,8 @@
     </div>
 
     <div id="savePath" style="margin-top:6px; font-family: 'Courier New', monospace; line-height: 1.6;">
-        <div><span class="label-red">Mentés helye:</span> <span class="label-yellow">Letöltések mappa</span></div>
-        <div id="lastFileDisplay"><span class="label-red">Utolsó fájl:</span> <span class="label-green">Nincs mentés</span></div>
+        <div><span class="label-red">Mentés helye:</span> <span class="label-yellow">Letöltések mappa ; Letöltések</span></div>
+        <div id="lastFileDisplay"><span class="label-red">Utolsó fájl:</span> <span class="label-green">Nincs mentés ; Nincs mentés</span></div>
         <div id="timeDisplay"><span class="label-red">Időpont:</span> <span class="label-cyan">--:--:--</span></div>
     </div> 
     
@@ -179,19 +181,13 @@
 <script>
   const editor = document.getElementById("editor"); const editorHeader = document.getElementById("editorHeader"); const captureArea = document.getElementById("captureArea"); const savedList = document.getElementById("savedList"); const storageInfo = document.getElementById("storageInfo"); const storageBarFill = document.getElementById("storageBarFill"); const linkInput = document.getElementById("linkInput"); const glowBtn = document.getElementById("glowBtn"); const lastFileDisplay = document.getElementById("lastFileDisplay"); const timeDisplay = document.getElementById("timeDisplay"); let activeColorClass = "neon-white"; let glowOn = true; let notes = []; 
 
-  editor.addEventListener("mousedown", function(e) {
-    const link = e.target.closest("a");
-    if (link) { window.open(link.href, "_blank"); }
-  });
+  editor.addEventListener("mousedown", function(e) { const link = e.target.closest("a"); if (link) { window.open(link.href, "_blank"); } });
 
   window.onload = () => {
     const savedData = localStorage.getItem("neonNotes_Final"); if (savedData) { try { notes = JSON.parse(savedData); refreshListUI(); } catch(e) { notes = []; } }
     updateStorageStatus(); editor.focus(); };
 
-  function setRecordedTime(ts) { 
-    timeDisplay.innerHTML = `<span class="label-red">Időpont:</span> <span class="label-cyan">${ts || "--:--:--"}</span>`; 
-  }
-
+  function setRecordedTime(ts) { timeDisplay.innerHTML = `<span class="label-red">Időpont:</span> <span class="label-cyan">${ts || "--:--:--"}</span>`; }
   function hardReset() { if(confirm("Törli a memóriát?")) { localStorage.clear(); notes = []; refreshListUI(); updateStorageStatus(); setRecordedTime(""); alert("Resetelve!"); } } 
   function refreshListUI() { savedList.innerHTML = ""; notes.forEach(n => addSavedItemToUI(n.name, n.timestamp, n.color)); } 
   
@@ -206,23 +202,21 @@
   function toggleTheme() { document.body.classList.toggle("light-mode"); }
 
   function applyColorAndSet(e, className) { 
-    e.preventDefault(); 
-    activeColorClass = className; 
+    e.preventDefault(); activeColorClass = className; 
     const selection = window.getSelection(); 
     if (selection.rangeCount > 0) { 
-        let container = selection.anchorNode;
-        if (container.nodeType === 3) container = container.parentElement;
+        let container = selection.anchorNode; if (container.nodeType === 3) container = container.parentElement;
         const closestLink = container.closest("a");
         if (closestLink) { closestLink.className = className; } else if (selection.toString().length > 0) {
             const range = selection.getRangeAt(0); const span = document.createElement("span"); span.className = className; span.textContent = selection.toString(); range.deleteContents(); range.insertNode(span);
         }
-    } 
-    editor.focus(); 
+    } editor.focus(); 
   } 
 
   function resetColor(){ activeColorClass = "neon-white"; } 
   function setFont(){ editor.style.fontFamily = document.getElementById("fontSelect").value; } 
   function setSize(size){ editor.style.fontSize = size + "px"; document.getElementById("sizeValue").innerText = size; } 
+  
   function insertHTMLAtCursor(html){ const sel=window.getSelection(); if(!sel.rangeCount) return; const range=sel.getRangeAt(0); range.deleteContents(); const el=document.createElement("div"); el.innerHTML=html; const frag=document.createDocumentFragment(); let node,lastNode; while((node=el.firstChild)) lastNode=frag.appendChild(node); range.insertNode(frag); if(lastNode){ range.setStartAfter(lastNode); range.collapse(true); sel.removeAllRanges(); sel.addRange(range); } } 
 
   editor.addEventListener("keydown", e => {
@@ -242,18 +236,12 @@
   editor.addEventListener("paste", e => { 
     e.preventDefault(); 
     const text = (e.clipboardData || window.clipboardData).getData("text/plain"); 
-    
-    // JAVÍTÁS: Ha kódnak tűnik (tartalmaz < vagy > jelet), akkor tiszta neon szövegként szúrjuk be, link felismerés nélkül.
-    if (text.includes('<') || text.includes('>')) {
-        const safeText = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/ /g, "&nbsp;").replace(/\n/g, "<br>");
-        insertHTMLAtCursor(`<span class="${activeColorClass}">${safeText}</span>`);
-        return;
-    }
-
+    const fragment = document.createDocumentFragment();
     const urlPattern = /(https?:\/\/[^\s]+)/gi;
-    let htmlResult = "";
     const lines = text.split(/\r?\n/);
+
     lines.forEach((line) => {
+      const lineDiv = document.createElement("div");
       let currentLineHTML = ""; let lastIdx = 0; let match;
       while ((match = urlPattern.exec(line)) !== null) {
         const before = line.substring(lastIdx, match.index);
@@ -263,10 +251,12 @@
       }
       const after = line.substring(lastIdx);
       if (after) currentLineHTML += `<span class="${activeColorClass}">${after.replace(/ /g, "&nbsp;")}</span>`;
-      if (currentLineHTML === "") currentLineHTML = "<br>";
-      htmlResult += `<div>${currentLineHTML}</div>`;
+      lineDiv.innerHTML = currentLineHTML || "<br>";
+      fragment.appendChild(lineDiv);
     });
-    document.execCommand("insertHTML", false, htmlResult);
+
+    const selection = window.getSelection();
+    if (selection.rangeCount) { const range = selection.getRangeAt(0); range.deleteContents(); range.insertNode(fragment); range.collapse(false); }
   }); 
 
   function insertLink(){ 
@@ -286,8 +276,7 @@
     const d = new Date();
     const timestamp = `${d.getFullYear()}. ${String(d.getMonth()+1).padStart(2,'0')}. ${String(d.getDate()).padStart(2,'0')}. ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
     editorHeader.innerHTML = `<span class="${activeColorClass}">${intro} - ${name} - ${timestamp}</span>`;
-    setRecordedTime(timestamp);
-    return true;
+    setRecordedTime(timestamp); return true;
   }
 
   function saveNote(){
@@ -296,10 +285,12 @@
     const parts = headerText.split(" - ");
     const intro = parts[0], namePart = parts[1], timestamp = parts[2];
     const fileName = `Jegyzet_${namePart}_${getFormattedDate()}.json`;
-    const data = { name: namePart, intro, timestamp, content: editor.innerHTML, color: activeColorClass }; try { 
+    const data = { name: namePart, intro, timestamp, content: editor.innerHTML, color: activeColorClass };
+    try { 
         notes = [...notes, data]; localStorage.setItem("neonNotes_Final", JSON.stringify(notes)); refreshListUI(); updateStorageStatus(); 
         const blob = new Blob([JSON.stringify(data)], {type:'application/json'}); const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = fileName; a.click(); 
-        lastFileDisplay.innerHTML = `<span class="label-red">Utolsó fájl:</span> <span class="label-green">${fileName}</span>`; } catch(e) { alert("Hiba!"); }
+        lastFileDisplay.innerHTML = `<span class="label-red">Utolsó fájl:</span> <span class="label-green">${fileName}</span>`;
+    } catch(e) { alert("Hiba!"); }
   } 
 
   async function downloadPDF(isColor) {
@@ -307,22 +298,12 @@
     const helperWrap = document.getElementById("pdf-helper-wrap"); 
     const captureNode = document.createElement("div"); 
     captureNode.className = "pdf-capture-node"; 
-    
     const isLight = document.body.classList.contains("light-mode"); 
     const bg = (isColor && !isLight) ? "#050505" : "#ffffff"; 
     captureNode.style.background = bg;
-    
     captureNode.appendChild(editorHeader.cloneNode(true)); 
     captureNode.appendChild(editor.cloneNode(true)); 
-    
-    if(!isColor) {
-        captureNode.querySelectorAll("span, a, div").forEach(el => {
-            el.style.setProperty("color", "black", "important");
-            el.style.setProperty("text-shadow", "none", "important");
-        });
-        captureNode.style.color = "black";
-    }
-
+    if(!isColor) { captureNode.querySelectorAll("span, a, div").forEach(el => { el.style.setProperty("color", "black", "important"); el.style.setProperty("text-shadow", "none", "important"); }); captureNode.style.color = "black"; }
     helperWrap.innerHTML = ""; helperWrap.appendChild(captureNode);
     html2canvas(captureNode, { backgroundColor: bg, scale: 2 }).then(canvas => {
       const imgWidth = 210; const imgHeight = (canvas.height * imgWidth) / canvas.width;
