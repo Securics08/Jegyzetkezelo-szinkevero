@@ -23,7 +23,6 @@
   #captureArea { flex:1; background:#050505; border:1px solid #333; border-radius:6px; display:flex; flex-direction:column; overflow-y:auto; position: relative; }
   #editorHeader { padding: 10px; font-size: 18px; min-height: 30px; margin-bottom: 5px; border-bottom: 1px dashed #333; }
   
-  /* SŰRŰ SORKÖZ FIX: A tartalom sűrű marad */
   .editor{ flex:1; padding:10px; overflow-y:auto; font-size:18px; white-space: pre-wrap; word-wrap: break-word; word-break: break-word; min-height: 100%; outline: none; line-height: 1.0 !important; }
   .editor div { margin: 0 !important; padding: 0 !important; min-height: 1.0em !important; line-height: 1.0 !important; }
 
@@ -158,8 +157,8 @@
     </div>
 
     <div id="savePath" style="margin-top:6px; font-family: 'Courier New', monospace; line-height: 1.6;">
-        <div><span class="label-red">Mentés helye:</span> <span class="label-yellow">Letöltések mappa ; Letöltések</span></div>
-        <div id="lastFileDisplay"><span class="label-red">Utolsó fájl:</span> <span class="label-green">Nincs mentés ; Nincs mentés</span></div>
+        <div><span class="label-red">Mentés helye:</span> <span class="label-yellow">IndexedDB (Belső Adatbázis 500MB)</span></div>
+        <div id="lastFileDisplay"><span class="label-red">Utolsó fájl:</span> <span class="label-green">Nincs mentés</span></div>
         <div id="timeDisplay"><span class="label-red">Időpont:</span> <span class="label-cyan">--:--:--</span></div>
     </div> 
     
@@ -181,23 +180,34 @@
 <script>
   const editor = document.getElementById("editor"); const editorHeader = document.getElementById("editorHeader"); const captureArea = document.getElementById("captureArea"); const savedList = document.getElementById("savedList"); const storageInfo = document.getElementById("storageInfo"); const storageBarFill = document.getElementById("storageBarFill"); const linkInput = document.getElementById("linkInput"); const glowBtn = document.getElementById("glowBtn"); const lastFileDisplay = document.getElementById("lastFileDisplay"); const timeDisplay = document.getElementById("timeDisplay"); let activeColorClass = "neon-white"; let glowOn = true; let notes = []; 
 
+  let db;
+  const dbRequest = indexedDB.open("NeonNotesDB", 1);
+  dbRequest.onupgradeneeded = e => { db = e.target.result; db.createObjectStore("notes", { keyPath: "id", autoIncrement: true }); };
+  dbRequest.onsuccess = e => { db = e.target.result; loadFromDB(); };
+
+  function loadFromDB() {
+    const transaction = db.transaction("notes", "readonly");
+    const store = transaction.objectStore("notes");
+    const request = store.getAll();
+    request.onsuccess = () => { notes = request.result; refreshListUI(); updateStorageStatus(); };
+  }
+
+  function updateStorageStatus() {
+    const totalMax = 500 * 1024 * 1024;
+    let size = new Blob([JSON.stringify(notes)]).size;
+    const freePercentage = Math.max(0, 100 - ((size / totalMax) * 100)).toFixed(2);
+    const usedMB = (size / (1024 * 1024)).toFixed(2);
+    storageBarFill.style.width = (100 - freePercentage) + "%";
+    storageBarFill.style.background = freePercentage < 10 ? "#ff0000" : "#00ff00";
+    storageInfo.innerHTML = `<span class="label-red">Használt:</span> <span class="label-cyan">${usedMB} MB</span> / 500 MB`;
+  }
+
   editor.addEventListener("mousedown", function(e) { const link = e.target.closest("a"); if (link) { window.open(link.href, "_blank"); } });
 
-  window.onload = () => {
-    const savedData = localStorage.getItem("neonNotes_Final"); if (savedData) { try { notes = JSON.parse(savedData); refreshListUI(); } catch(e) { notes = []; } }
-    updateStorageStatus(); editor.focus(); };
-
   function setRecordedTime(ts) { timeDisplay.innerHTML = `<span class="label-red">Időpont:</span> <span class="label-cyan">${ts || "--:--:--"}</span>`; }
-  function hardReset() { if(confirm("Törli a memóriát?")) { localStorage.clear(); notes = []; refreshListUI(); updateStorageStatus(); setRecordedTime(""); alert("Resetelve!"); } } 
+  function hardReset() { if(confirm("Törli a memóriát?")) { const t = db.transaction("notes", "readwrite"); t.objectStore("notes").clear(); t.oncomplete = () => { notes = []; refreshListUI(); updateStorageStatus(); setRecordedTime(""); alert("Resetelve!"); }; } } 
   function refreshListUI() { savedList.innerHTML = ""; notes.forEach(n => addSavedItemToUI(n.name, n.timestamp, n.color)); } 
   
-  function updateStorageStatus() {
-    let totalUsed = 0; for (let x in localStorage) { if (localStorage.hasOwnProperty(x)) totalUsed += (localStorage[x].length * 2); }
-    const max = 5 * 1024 * 1024; const freeBytes = Math.max(0, max - totalUsed); const freePercentage = ((freeBytes / max) * 100).toFixed(2); const freeMB = (freeBytes / (1024 * 1024)).toFixed(2); 
-    let statusColor = "#00ff00"; if (freePercentage <= 20) statusColor = "#ff0000"; else if (freePercentage <= 50) statusColor = "#ffff00";
-    storageBarFill.style.width = freePercentage + "%"; storageBarFill.style.background = statusColor; 
-    storageInfo.innerHTML = `<span class="label-red">Szabad memória:</span> <span style="color: ${statusColor}">${freePercentage}% (${freeMB} MB maradék)</span>`; } 
-
   function toggleGlow(){ glowOn = !glowOn; document.body.classList.toggle("glow-off", !glowOn); glowBtn.innerText = glowOn ? "Glow ON" : "Glow OFF"; glowBtn.className = glowOn ? "on" : "off"; } 
   function toggleTheme() { document.body.classList.toggle("light-mode"); }
 
@@ -239,7 +249,6 @@
     const fragment = document.createDocumentFragment();
     const urlPattern = /(https?:\/\/[^\s]+)/gi;
     const lines = text.split(/\r?\n/);
-
     lines.forEach((line) => {
       const lineDiv = document.createElement("div");
       let currentLineHTML = ""; let lastIdx = 0; let match;
@@ -254,7 +263,6 @@
       lineDiv.innerHTML = currentLineHTML || "<br>";
       fragment.appendChild(lineDiv);
     });
-
     const selection = window.getSelection();
     if (selection.rangeCount) { const range = selection.getRangeAt(0); range.deleteContents(); range.insertNode(fragment); range.collapse(false); }
   }); 
@@ -284,13 +292,15 @@
     const headerText = editorHeader.innerText;
     const parts = headerText.split(" - ");
     const intro = parts[0], namePart = parts[1], timestamp = parts[2];
-    const fileName = `Jegyzet_${namePart}_${getFormattedDate()}.json`;
     const data = { name: namePart, intro, timestamp, content: editor.innerHTML, color: activeColorClass };
-    try { 
-        notes = [...notes, data]; localStorage.setItem("neonNotes_Final", JSON.stringify(notes)); refreshListUI(); updateStorageStatus(); 
-        const blob = new Blob([JSON.stringify(data)], {type:'application/json'}); const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = fileName; a.click(); 
-        lastFileDisplay.innerHTML = `<span class="label-red">Utolsó fájl:</span> <span class="label-green">${fileName}</span>`;
-    } catch(e) { alert("Hiba!"); }
+    const t = db.transaction("notes", "readwrite");
+    t.objectStore("notes").put(data);
+    t.oncomplete = () => { 
+      loadFromDB();
+      const blob = new Blob([JSON.stringify(data)], {type:'application/json'});
+      const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `Jegyzet_${namePart}_${getFormattedDate()}.json`; a.click();
+      lastFileDisplay.innerHTML = `<span class="label-red">Utolsó fájl:</span> <span class="label-green">Mentve az adatbázisba</span>`;
+    };
   } 
 
   async function downloadPDF(isColor) {
@@ -324,16 +334,15 @@
   function exportNotes(){ 
     if(notes.length === 0) { alert("Nincs mit exportálni!"); return; }
     const exportName = prompt("Export fájl neve:", "Osszes_Jegyzet_Export"); if(exportName === null) return;
-    const fileName = `${exportName}_${getFormattedDate()}.json`;
-    const blob = new Blob([JSON.stringify(notes)], {type:'application/json'}); const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = fileName; a.click(); 
+    const blob = new Blob([JSON.stringify(notes)], {type:'application/json'}); const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `${exportName}_${getFormattedDate()}.json`; a.click(); 
   }
 
-  function importNotes(){ const input = document.createElement("input"); input.type="file"; input.accept=".json"; input.onchange = e => { const file = e.target.files[0]; if(!file) return; const reader = new FileReader(); reader.onload = ev => { try { const imported = JSON.parse(ev.target.result); notes = Array.isArray(imported) ? notes.concat(imported) : [...notes, imported]; localStorage.setItem("neonNotes_Final", JSON.stringify(notes)); refreshListUI(); updateStorageStatus(); alert("Importálva!"); } catch(err) { alert("Hiba!"); } }; reader.readAsText(file); }; input.click(); } 
+  function importNotes(){ const input = document.createElement("input"); input.type="file"; input.accept=".json"; input.onchange = e => { const file = e.target.files[0]; if(!file) return; const reader = new FileReader(); reader.onload = ev => { try { const imported = JSON.parse(ev.target.result); const t = db.transaction("notes", "readwrite"); const store = t.objectStore("notes"); if(Array.isArray(imported)) imported.forEach(n => store.put(n)); else store.put(imported); t.oncomplete = () => { loadFromDB(); alert("Importálva!"); }; } catch(err) { alert("Hiba!"); } }; reader.readAsText(file); }; input.click(); } 
   function addSavedItemToUI(name, date, color){ const div = document.createElement("div"); div.className="saved-item"; div.innerHTML=`<span class="${color}">${name} - ${date}</span>`; div.onclick = ()=>{ const found = notes.find(n=>n.name===name && n.timestamp===date); if(found) { editor.innerHTML = found.content; editorHeader.innerHTML = `<span class="${found.color}">${found.intro} - ${found.name} - ${found.timestamp}</span>`; setRecordedTime(found.timestamp); } }; savedList.appendChild(div); } 
   function loadNote(){ const name = prompt("Keresett név:"); const found = notes.find(n=>n.name === name); if(found) { editor.innerHTML = found.content; editorHeader.innerHTML = `<span class="${found.color}">${found.intro} - ${found.name} - ${found.timestamp}</span>`; setRecordedTime(found.timestamp); } } 
   function newNote(){ editor.innerHTML = ""; editorHeader.innerHTML = ""; setRecordedTime(""); } 
   function deleteNote(){ if(confirm("Törli?")) newNote(); } 
-  function clearList() { if(confirm("Üríti a listát?")) { notes=[]; localStorage.removeItem("neonNotes_Final"); savedList.innerHTML=""; updateStorageStatus(); setRecordedTime(""); } } 
+  function clearList() { if(confirm("Üríti a listát?")) { const t = db.transaction("notes", "readwrite"); t.objectStore("notes").clear(); t.oncomplete = () => { notes=[]; savedList.innerHTML=""; updateStorageStatus(); setRecordedTime(""); }; } } 
 </script>
 </body>
 </html>
