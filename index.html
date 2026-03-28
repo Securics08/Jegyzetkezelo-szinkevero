@@ -154,12 +154,14 @@
     <div class="toolbar">
         <button onclick="loadNote()">Betöltés</button> <button onclick="saveNote()">Mentés (.json)</button> <button onclick="deleteNote()">Törlés</button> <button onclick="exportNotes()">EXPORT (ÖSSZES)</button> <button onclick="importNotes()">Import (.json)</button> <button onclick="downloadPNG(false)">PNG fekete</button> <button onclick="downloadPNG(true)">PNG átlátszó</button> 
         <button onclick="downloadPDF(false)">PDF FF</button> <button onclick="downloadPDF(true)" style="background:#7a001f">PDF Színes</button>
+        <button onclick="insertHTMLPrompt()" style="background:#0055ff; border-color:#00f6ff">HTML BEILLESZTÉS</button>
     </div>
 
     <div id="savePath" style="margin-top:6px; font-family: 'Courier New', monospace; line-height: 1.6;">
-        <div><span class="label-red">Mentés helye:</span> <span class="label-yellow">IndexedDB (Belső Adatbázis 500MB)</span></div>
+        <div><span class="label-red">Mentés helye:</span> <span class="label-yellow">Letöltések mappa</span></div>
         <div id="lastFileDisplay"><span class="label-red">Utolsó fájl:</span> <span class="label-green">Nincs mentés</span></div>
         <div id="timeDisplay"><span class="label-red">Időpont:</span> <span class="label-cyan">--:--:--</span></div>
+        <div id="freeMemoryDisplay"><span class="label-red">Szabad memória:</span> <span class="label-cyan"></span></div>
     </div> 
     
     <div id="storageInfo"></div> 
@@ -200,6 +202,8 @@
     storageBarFill.style.width = (100 - freePercentage) + "%";
     storageBarFill.style.background = freePercentage < 10 ? "#ff0000" : "#00ff00";
     storageInfo.innerHTML = `<span class="label-red">Használt:</span> <span class="label-cyan">${usedMB} MB</span> / 500 MB`;
+    const freeMB = ((totalMax - size) / (1024 * 1024)).toFixed(2);
+    document.getElementById("freeMemoryDisplay").innerHTML = `<span class="label-red">Szabad memória:</span> <span class="label-cyan">${freeMB} MB</span>`;
   }
 
   editor.addEventListener("mousedown", function(e) { const link = e.target.closest("a"); if (link) { window.open(link.href, "_blank"); } });
@@ -228,6 +232,19 @@
   function setSize(size){ editor.style.fontSize = size + "px"; document.getElementById("sizeValue").innerText = size; } 
   
   function insertHTMLAtCursor(html){ const sel=window.getSelection(); if(!sel.rangeCount) return; const range=sel.getRangeAt(0); range.deleteContents(); const el=document.createElement("div"); el.innerHTML=html; const frag=document.createDocumentFragment(); let node,lastNode; while((node=el.firstChild)) lastNode=frag.appendChild(node); range.insertNode(frag); if(lastNode){ range.setStartAfter(lastNode); range.collapse(true); sel.removeAllRanges(); sel.addRange(range); } } 
+
+  // JAVÍTOTT FUNKCIÓ: Mindig a fő editor végére illeszti a nyers kódot
+  function insertHTMLPrompt() {
+    const htmlCode = prompt("Másold be ide a beillesztendő HTML kódot:");
+    if(htmlCode) {
+        const span = document.createElement("span");
+        span.className = activeColorClass;
+        span.textContent = htmlCode;
+        editor.appendChild(span);
+        editor.appendChild(document.createElement("br"));
+        editor.scrollTop = editor.scrollHeight;
+    }
+  }
 
   editor.addEventListener("keydown", e => {
     if(e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey){
@@ -292,14 +309,15 @@
     const headerText = editorHeader.innerText;
     const parts = headerText.split(" - ");
     const intro = parts[0], namePart = parts[1], timestamp = parts[2];
+    const fileName = `Jegyzet_${namePart}_${getFormattedDate()}.json`;
     const data = { name: namePart, intro, timestamp, content: editor.innerHTML, color: activeColorClass };
     const t = db.transaction("notes", "readwrite");
     t.objectStore("notes").put(data);
     t.oncomplete = () => { 
       loadFromDB();
       const blob = new Blob([JSON.stringify(data)], {type:'application/json'});
-      const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `Jegyzet_${namePart}_${getFormattedDate()}.json`; a.click();
-      lastFileDisplay.innerHTML = `<span class="label-red">Utolsó fájl:</span> <span class="label-green">Mentve az adatbázisba</span>`;
+      const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = fileName; a.click();
+      lastFileDisplay.innerHTML = `<span class="label-red">Utolsó fájl:</span> <span class="label-green">${fileName}</span>`;
     };
   } 
 
