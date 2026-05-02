@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>ULTRA-NOTE-PNG-Save_STABLE_V.119_Betűs</title>
+  <title>Neon Jegyzet - 119 Unique Fonts</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <link
@@ -110,10 +110,9 @@
     #editorHeader {
       padding: 10px;
       font-size: 18px;
-      min-height: 20px;
+      min-height: 30px;
       margin-bottom: 5px;
       border-bottom: 1px dashed #333;
-      text-align: left;
     }
 
     .editor {
@@ -136,7 +135,6 @@
       line-height: 1.0 !important;
     }
 
-    /* NEON OSZTÁLYOK */
     .neon-black {
       color: #000000 !important;
       text-shadow: none !important;
@@ -217,8 +215,7 @@
       text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 15px #ffffff, 0 0 20px #ffffff !important;
     }
 
-    /* JAVÍTOTT GLOW KIKAPCSOLÓ SZABÁLY */
-    body.glow-off [class*="neon-"] {
+    .glow-off [class^='neon-'] {
       text-shadow: none !important;
     }
 
@@ -308,10 +305,12 @@
       background: #ff0000 !important;
       color: white !important;
       font-weight: bold;
+      width: 100%;
       cursor: pointer;
       padding: 10px;
       border: none;
       border-radius: 4px;
+      margin-top: 5px;
     }
 
     #pdf-helper-wrap {
@@ -329,6 +328,7 @@
 </head>
 
 <body>
+
   <div class="container">
     <div class="sidebar">
       <div style="text-align:center;font-size:12px;margin-bottom:8px;">Neon<br>Színek</div>
@@ -349,7 +349,7 @@
       <button class="color-btn" style="background:#ff33ff" onmousedown="applyColorAndSet(event, 'neon-pink')"></button>
       <button class="color-btn" style="background:#00ff00" onmousedown="applyColorAndSet(event, 'neon-green')"></button>
       <button class="color-btn" style="background:#00ff66"
-        onmousedown="applyColorAndSet(event, 'neon-lightgreen')"></button>
+        onmousedown="applyColorAndSet(event, 'neon-lightgreen')"></button
       <button class="color-btn" style="background:#33ff33" onmousedown="applyColorAndSet(event, 'neon-lime')"></button>
       <button class="color-btn" style="background:#00ff99" onmousedown="applyColorAndSet(event, 'neon-mint')"></button>
       <button class="color-btn" style="background:#8000ff"
@@ -357,13 +357,15 @@
       <button class="color-btn" style="background:#ff0000" onmousedown="applyColorAndSet(event, 'neon-red')"></button>
       <button class="color-btn" style="background:#ffffff" onmousedown="applyColorAndSet(event, 'neon-white')"></button>
     </div>
+
     <div class="main">
       <div
         style="background: #1a1a1a; padding: 10px; border-radius: 8px; border: 1px solid #444; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
-        <div class="neon-orange" style="font-weight: bold; font-size: 25px; font-family: 'Orbitron', sans-serif;">
-          Securics-911-PNG-Save_STABLE_V.121_Betűs</div>
+        <div class="neon-green" style="font-weight: bold; font-size: 25px; font-family: 'Roboto serif', sans-serif;">
+          Securics-08-PNG-Save_STABLE_V.119_Betűs</div>
         <button class="hard-reset-btn" onclick="hardReset()">VÉSZHELYZETI RESET (MEMÓRIA ÜRÍTÉS)</button>
       </div>
+
       <div class="toolbar">
         <label>Betűtípus:</label>
         <select id="fontSelect" onchange="setFont()">
@@ -497,11 +499,8 @@
           <option value="Geneva" style="color:#ffffff; font-family:'Geneva';">117. Geneva</option>
           <option value="Optima" style="color:#ff6600; font-family:'Optima';">118. Optima</option>
           <option value="Tahoma" style="color:#00ff00; font-family:'Tahoma';">119. Tahoma (Vége)</option>
-          <option value="Comic Sans MS Bold" style="color:#ff00ff; font-family:'Comic Sans MS'; font-weight:bold;">120.
-            Comic Sans Bold</option>
-          <option value="Verdana Bold" style="color:#ff33ff; font-family:'Verdana'; font-weight:bold;">121. Verdana Bold
-          </option>
         </select>
+
         <label>Méret:</label>
         <input type="range" id="sizeRange" min="8" max="250" value="20" oninput="setSize(this.value)"> <span
           id="sizeValue">20</span>px
@@ -512,17 +511,17 @@
         <button onclick="insertLink()">Beszúrás</button>
         <button onclick="newNote()">+ Új lap</button>
       </div>
+
       <div class="toolbar">
-        <button onclick="loadNote()">Betöltés</button> <button onclick="saveNote()">MENTÉS (.JSON)</button> <button
-          onclick="deleteNote()">Törlés</button> <button onclick="exportNotes()">EXPORT (ÖSSZES)</button>
-        <input type="file" id="importInput" style="display:none" onchange="processImport(event)" accept=".json">
-        <button onclick="document.getElementById('importInput').click()">Import (.json)</button>
-        <button onclick="downloadPNG(false)">PNG fekete</button> <button onclick="downloadPNG(true)">PNG
-          átlátszó</button>
+        <button onclick="loadNote()">Betöltés</button> <button onclick="saveNote()">Mentés (.json)</button> <button
+          onclick="deleteNote()">Törlés</button> <button onclick="exportNotes()">EXPORT (ÖSSZES)</button> <button
+          onclick="importNotes()">Import (.json)</button> <button onclick="downloadPNG(false)">PNG fekete</button>
+        <button onclick="downloadPNG(true)">PNG átlátszó</button>
         <button onclick="downloadPDF(false)">PDF FF</button> <button onclick="downloadPDF(true)"
           style="background:#7a001f">PDF Színes</button>
         <button onclick="insertHTMLPrompt()" style="background:#0055ff; border-color:#00f6ff">HTML BEILLESZTÉS</button>
       </div>
+
       <div id="savePath" style="margin-top:6px; font-family: 'Courier New', monospace; line-height: 1.6;">
         <div><span class="label-red">Mentés helye:</span> <span class="label-yellow">Letöltések mappa</span></div>
         <div id="lastFileDisplay"><span class="label-red">Utolsó fájl:</span> <span class="label-green">Nincs
@@ -531,15 +530,18 @@
         <div id="freeMemoryDisplay"><span class="label-red">Szabad memória:</span> <span class="label-cyan"></span>
         </div>
       </div>
+
       <div id="storageInfo"></div>
       <div class="storage-bar-bg">
         <div id="storageBarFill"></div>
       </div>
+
       <div id="captureArea">
-        <div id="editorHeader" contenteditable="true"></div>
+        <div id="editorHeader"></div>
         <div id="editor" class="editor" contenteditable="true"></div>
       </div>
     </div>
+
     <div class="saved-panel">
       <h3>Mentett jegyzetek</h3>
       <div id="savedList"></div> <button class="clear-btn" onclick="clearList()"
@@ -547,100 +549,16 @@
         ürítése</button>
     </div>
   </div>
+
   <div id="pdf-helper-wrap"></div>
+
   <script>
     const editor = document.getElementById("editor"); const editorHeader = document.getElementById("editorHeader"); const captureArea = document.getElementById("captureArea"); const savedList = document.getElementById("savedList"); const storageInfo = document.getElementById("storageInfo"); const storageBarFill = document.getElementById("storageBarFill"); const linkInput = document.getElementById("linkInput"); const glowBtn = document.getElementById("glowBtn"); const lastFileDisplay = document.getElementById("lastFileDisplay"); const timeDisplay = document.getElementById("timeDisplay"); let activeColorClass = "neon-white"; let glowOn = true; let notes = [];
+
     let db;
-
-    activeColorClass = localStorage.getItem("selectedNeonColor") || "neon-white";
-
-
-    // Keresd meg ezt a részt és írd át így:
-    window.addEventListener("load", () => {
-      const savedColor = localStorage.getItem("selectedNeonColor");
-      console.log(savedColor)
-
-      if (savedColor) {
-        activeColorClass = savedColor;
-        applyColorAndSet(null, activeColorClass)
-        // Opcionális: itt beállíthatnál egy vizuális visszajelzést is a gombokon
-      } else {
-        activeColorClass = "neon-white"; // Alapértelmezett, ha nincs mentve semmi
-      }
-    });
-
     const dbRequest = indexedDB.open("NeonNotesDB", 1);
     dbRequest.onupgradeneeded = e => { db = e.target.result; db.createObjectStore("notes", { keyPath: "id", autoIncrement: true }); };
     dbRequest.onsuccess = e => { db = e.target.result; loadFromDB(); };
-
-    function getFormattedTimestamp() {
-      const now = new Date();
-      return `${now.getFullYear()}_${now.getMonth() + 1}_${now.getDate()}_${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}`;
-    }
-
-    async function downloadPNG(trans) {
-      const area = document.getElementById("captureArea");
-      const header = document.getElementById("editorHeader");
-      const originalBg = area.style.background;
-      const originalBorder = area.style.border;
-      const headerBorder = header.style.borderBottom;
-      if (trans) { area.style.background = "transparent"; area.style.border = "none"; header.style.borderBottom = "none"; }
-      const canvas = await html2canvas(area, { backgroundColor: trans ? null : "#050505", scale: 2, useCORS: true, logging: false });
-      if (trans) { area.style.background = originalBg; area.style.border = originalBorder; header.style.borderBottom = headerBorder; }
-      const a = document.createElement("a");
-      a.download = `note_${getFormattedTimestamp()}.png`;
-      a.href = canvas.toDataURL("image/png");
-      a.click();
-    }
-
-    function saveNote() {
-      const currentTitle = editorHeader.innerText || "JEGYZET";
-      const name = prompt("Add meg a jegyzet nevét:", currentTitle);
-      if (!name) return;
-      const ts = getFormattedTimestamp();
-      const fileName = `${name}_PNG_Save_${ts}`;
-      const noteObj = { name: name, content: editor.innerHTML, timestamp: new Date().toLocaleString('hu-HU'), color: activeColorClass };
-      const tx = db.transaction("notes", "readwrite");
-      tx.objectStore("notes").add(noteObj);
-      tx.oncomplete = () => {
-        editorHeader.innerText = name;
-        loadFromDB();
-        downloadFile(JSON.stringify(noteObj), fileName);
-        lastFileDisplay.innerHTML = `<span class="label-red">Utolsó fájl:</span> <span class="label-green">${fileName}.json</span>`;
-        timeDisplay.innerHTML = `<span class="label-red">Időpont:</span> <span class="label-cyan">${noteObj.timestamp}</span>`;
-      };
-    }
-
-    function processImport(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = e => {
-        try {
-          const importedData = JSON.parse(e.target.result);
-          const tx = db.transaction("notes", "readwrite");
-          const store = tx.objectStore("notes");
-          if (Array.isArray(importedData)) {
-            importedData.forEach(item => { delete item.id; store.add(item); });
-          } else {
-            delete importedData.id; store.add(importedData);
-          }
-          tx.oncomplete = () => { loadFromDB(); alert("Importálás sikeres!"); };
-        } catch (err) { alert("Hiba a fájl feldolgozásakor!"); }
-      };
-      reader.readAsText(file);
-    }
-
-    function exportNotes() {
-      if (notes.length === 0) { alert("Nincs mit exportálni!"); return; }
-      const name = prompt("Add meg az exportált fájl nevét:", "ÖSSZES_JEGYZET");
-      if (!name) return;
-      const ts = getFormattedTimestamp();
-      const exportFileName = `${name}_PNG_EXPORT_${ts}`;
-      downloadFile(JSON.stringify(notes), exportFileName);
-      lastFileDisplay.innerHTML = `<span class="label-red">Utolsó fájl:</span> <span class="label-green">${exportFileName}.json</span>`;
-      timeDisplay.innerHTML = `<span class="label-red">Időpont:</span> <span class="label-cyan">${new Date().toLocaleString('hu-HU')}</span>`;
-    }
 
     function loadFromDB() {
       const transaction = db.transaction("notes", "readonly");
@@ -649,43 +567,44 @@
       request.onsuccess = () => { notes = request.result; refreshListUI(); updateStorageStatus(); };
     }
 
-    function refreshListUI() {
-      savedList.innerHTML = "";
-      notes.forEach(note => {
-        const item = document.createElement("div");
-        item.className = "saved-item";
-        item.innerHTML = `<span class="${note.color}">${note.name}</span>`;
-        item.onclick = () => { editor.innerHTML = note.content; editorHeader.innerText = note.name; };
-        savedList.appendChild(item);
-      });
+    function updateStorageStatus() {
+      const totalMax = 500 * 1024 * 1024;
+      let size = new Blob([JSON.stringify(notes)]).size;
+      const freePercentage = Math.max(0, 100 - ((size / totalMax) * 100)).toFixed(2);
+      const usedMB = (size / (1024 * 1024)).toFixed(2);
+      storageBarFill.style.width = (100 - freePercentage) + "%";
+      storageBarFill.style.background = freePercentage < 10 ? "#ff0000" : "#00ff00";
+      storageInfo.innerHTML = `<span class="label-red">Használt:</span> <span class="label-cyan">${usedMB} MB</span> / 500 MB`;
+      const freeMB = ((totalMax - size) / (1024 * 1024)).toFixed(2);
+      document.getElementById("freeMemoryDisplay").innerHTML = `<span class="label-red">Szabad memória:</span> <span class="label-cyan">${freeMB} MB</span>`;
     }
 
-    function setFont() {
-      const font = document.getElementById("fontSelect").value;
-      const isBold = font.includes("Bold");
-      const family = isBold ? font.replace(" Bold", "") : font;
-      document.execCommand('fontName', false, family);
-      if (isBold) document.execCommand('bold', false, null);
-    }
+    editor.addEventListener("mousedown", function (e) { const link = e.target.closest("a"); if (link) { window.open(link.href, "_blank"); } });
 
-    function setSize(size) {
-      document.getElementById("sizeValue").innerText = size;
+    function setRecordedTime(ts) { timeDisplay.innerHTML = `<span class="label-red">Időpont:</span> <span class="label-cyan">${ts || "--:--:--"}</span>`; }
+    function hardReset() { if (confirm("Törli a memóriát?")) { const t = db.transaction("notes", "readwrite"); t.objectStore("notes").clear(); t.oncomplete = () => { notes = []; refreshListUI(); updateStorageStatus(); setRecordedTime(""); alert("Resetelve!"); }; } }
+    function refreshListUI() { savedList.innerHTML = ""; notes.forEach(n => addSavedItemToUI(n.name, n.timestamp, n.color)); }
+
+    function toggleGlow() { glowOn = !glowOn; document.body.classList.toggle("glow-off", !glowOn); glowBtn.innerText = glowOn ? "Glow ON" : "Glow OFF"; glowBtn.className = glowOn ? "on" : "off"; }
+    function toggleTheme() { document.body.classList.toggle("light-mode"); }
+
+    function applyColorAndSet(e, className) {
+      e.preventDefault(); activeColorClass = className;
       const selection = window.getSelection();
-      if (!selection.rangeCount) return;
-      const range = selection.getRangeAt(0);
-      const span = document.createElement("span");
-      span.style.fontSize = size + "px";
-      if (range.collapsed) {
-        span.innerHTML = "&#8203;";
-        range.insertNode(span);
-        range.setStartAfter(span);
-        selection.removeAllRanges();
-        selection.addRange(range);
-      } else {
-        span.appendChild(range.extractContents());
-        range.insertNode(span);
-      }
+      if (selection.rangeCount > 0) {
+        let container = selection.anchorNode; if (container.nodeType === 3) container = container.parentElement;
+        const closestLink = container.closest("a");
+        if (closestLink) { closestLink.className = className; } else if (selection.toString().length > 0) {
+          const range = selection.getRangeAt(0); const span = document.createElement("span"); span.className = className; span.textContent = selection.toString(); range.deleteContents(); range.insertNode(span);
+        }
+      } editor.focus();
     }
+
+    function resetColor() { activeColorClass = "neon-white"; }
+    function setFont() { editor.style.fontFamily = document.getElementById("fontSelect").value; }
+    function setSize(size) { editor.style.fontSize = size + "px"; document.getElementById("sizeValue").innerText = size; }
+
+    function insertHTMLAtCursor(html) { const sel = window.getSelection(); if (!sel.rangeCount) return; const range = sel.getRangeAt(0); range.deleteContents(); const el = document.createElement("div"); el.innerHTML = html; const frag = document.createDocumentFragment(); let node, lastNode; while ((node = el.firstChild)) lastNode = frag.appendChild(node); range.insertNode(frag); if (lastNode) { range.setStartAfter(lastNode); range.collapse(true); sel.removeAllRanges(); sel.addRange(range); } }
 
     function insertHTMLPrompt() {
       const htmlCode = prompt("Másold be ide a beillesztendő HTML kódot:");
@@ -699,113 +618,195 @@
       }
     }
 
-    function downloadFile(content, name) {
-      const blob = new Blob([content], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url; a.download = name + ".json";
-      document.body.appendChild(a); a.click();
-      document.body.removeChild(a); URL.revokeObjectURL(url);
-    }
+    editor.addEventListener("keydown", e => {
+      if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        const selection = window.getSelection();
+        let container = selection.anchorNode.parentElement;
+        if (container && (container.tagName === "A" || container.closest("a"))) return;
+        e.preventDefault();
+        if (container && container.classList.contains(activeColorClass) && container.tagName === "SPAN") {
+          const textNode = document.createTextNode(e.key === " " ? "\u00A0" : e.key); const range = selection.getRangeAt(0); range.insertNode(textNode); range.setStartAfter(textNode); range.collapse(true);
+        } else {
+          let char = e.key === " " ? "&nbsp;" : e.key; insertHTMLAtCursor(`<span class="${activeColorClass}">${char}</span>`);
+        }
+      } else if (e.key === "Enter") { e.preventDefault(); insertHTMLAtCursor("<div><br></div>"); }
+    });
 
-    function updateStorageStatus() {
-      const totalMax = 500 * 1024 * 1024;
-      let size = new Blob([JSON.stringify(notes)]).size;
-      const usedMB = (size / (1024 * 1024)).toFixed(2);
-      storageBarFill.style.width = Math.min(100, (size / totalMax) * 100) + "%";
-      document.getElementById("freeMemoryDisplay").innerHTML = `<span class="label-red">Szabad:</span> <span class="label-cyan">${(500 - usedMB).toFixed(2)} MB</span>`;
-    }
+
+    editor.addEventListener("paste", e => {
+      e.preventDefault();
+      const text = (e.clipboardData || window.clipboardData).getData("text/plain");
+      const fragment = document.createDocumentFragment();
+      const urlPattern = /(https?:\/\/[^\s]+)/gi;
+      const lines = text.split(/\r?\n/);
+      lines.forEach((line) => {
+        const lineDiv = document.createElement("div");
+        let currentLineHTML = ""; let lastIdx = 0; let match;
+        while ((match = urlPattern.exec(line)) !== null) {
+          const before = line.substring(lastIdx, match.index);
+          if (before) currentLineHTML += `<span class="${activeColorClass}">${before.replace(/ /g, "&nbsp;")}</span>`;
+          currentLineHTML += `<a href="${match[0]}" target="_blank" class="${activeColorClass}">${match[0]}</a>`;
+          lastIdx = urlPattern.lastIndex;
+        }
+        const after = line.substring(lastIdx);
+        if (after) currentLineHTML += `<span class="${activeColorClass}">${after.replace(/ /g, "&nbsp;")}</span>`;
+        lineDiv.innerHTML = currentLineHTML || "<br>";
+        fragment.appendChild(lineDiv);
+      });
+      const selection = window.getSelection();
+      if (selection.rangeCount) { const range = selection.getRangeAt(0); range.deleteContents(); range.insertNode(fragment); range.collapse(false); }
+    });
+
+    editor.addEventListener("input", () => {
+      localStorage.setItem("autosave_content", editor.innerHTML);
+      localStorage.setItem("autosave_header", editorHeader.innerHTML);
+    });
+    window.addEventListener("load", () => {
+      // 1. Szín visszatöltése
+      const savedColor = localStorage.getItem("lastNeonColor");
+      if (savedColor) {
+        activeColorClass = savedColor;
+      }
+
+      // 2. Tartalom visszatöltése
+      const savedContent = localStorage.getItem("autosave_content");
+      const savedHeader = localStorage.getItem("autosave_header");
+
+      if (savedContent) {
+        editor.innerHTML = savedContent;
+      }
+      if (savedHeader) {
+        editorHeader.innerHTML = savedHeader;
+      }
+    });
 
     function applyColorAndSet(e, className) {
-      if (e) e.preventDefault();
-
+      e.preventDefault();
       activeColorClass = className;
-      localStorage.setItem("selectedNeonColor", className);
-
-      // Először fókuszáljunk az editorra, ha nem ott lennénk
-      editor.focus();
+      // Mentjük a választott színt a localStorage-ba
+      localStorage.setItem("lastNeonColor", className);
 
       const selection = window.getSelection();
-
-      // Ellenőrizzük, hogy van-e érvényes kijelölési tartomány
-      if (selection.rangeCount === 0) {
-        // Ha nincs tartomány, készítünk egyet az editor végére
-        const range = document.createRange();
-        range.selectNodeContents(editor);
-        range.collapse(false); // A végére ugrik
-        selection.removeAllRanges();
-        selection.addRange(range);
-      }
-
-      if (selection.toString().length > 0) {
-        let range = selection.getRangeAt(0);
-        let span = document.createElement("span");
-        span.className = className;
-        span.textContent = selection.toString();
-        range.deleteContents();
-        range.insertNode(span);
-      } else {
-        const span = document.createElement("span");
-        span.className = className;
-        span.innerHTML = "&#8203;";
-        const range = selection.getRangeAt(0);
-        range.insertNode(span);
-        range.setStart(span, 1);
-        range.collapse(true);
-        selection.removeAllRanges();
-        selection.addRange(range);
+      if (selection.rangeCount > 0) {
+        let container = selection.anchorNode; if (container.nodeType === 3) container = container.parentElement;
+        const closestLink = container.closest("a");
+        if (closestLink) { closestLink.className = className; } else if (selection.toString().length > 0) {
+          const range = selection.getRangeAt(0); const span = document.createElement("span"); span.className = className; span.textContent = selection.toString(); range.deleteContents(); range.insertNode(span);
+        }
+      } editor.focus();
+    }
+    function insertLink() {
+      let url = linkInput.value.trim();
+      if (url) {
+        if (!url.startsWith("http")) url = "https://" + url;
+        const linkHTML = `<a href="${url}" target="_blank" class="${activeColorClass}">${url}</a><span class="${activeColorClass}">&nbsp;</span>`;
+        insertHTMLAtCursor(linkHTML); linkInput.value = "";
       }
     }
-    function toggleGlow() {
-      glowOn = !glowOn;
-      document.body.classList.toggle("glow-off");
-      glowBtn.classList.toggle("on");
-      glowBtn.classList.toggle("off");
-      glowBtn.innerText = glowOn ? "Glow ON" : "Glow OFF";
+
+    function getFormattedDate() { const d = new Date(); return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}_${String(d.getHours()).padStart(2, '0')}-${String(d.getMinutes()).padStart(2, '0')}`; }
+
+    function askHeaderInfo() {
+      const intro = prompt("Bevezető:", editorHeader.innerText.split(" - ")[0] || ""); if (intro === null) return false;
+      const name = prompt("Jegyzet neve:", editorHeader.innerText.split(" - ")[1] || ""); if (!name) return false;
+      const d = new Date();
+      const timestamp = `${d.getFullYear()}. ${String(d.getMonth() + 1).padStart(2, '0')}. ${String(d.getDate()).padStart(2, '0')}. ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')}`;
+      editorHeader.innerHTML = `<span class="${activeColorClass}">${intro} - ${name} - ${timestamp}</span>`;
+      setRecordedTime(timestamp); return true;
     }
-    function toggleTheme() { document.body.classList.toggle("light-mode"); }
-    function newNote() { editor.innerHTML = ""; editorHeader.innerText = ""; }
-    function resetColor() {
-      activeColorClass = "neon-white";
-      localStorage.setItem("selectedNeonColor", "neon-white");
+
+    function saveNote() {
+      if (!askHeaderInfo()) return;
+      const headerText = editorHeader.innerText;
+      const parts = headerText.split(" - ");
+      const intro = parts[0], namePart = parts[1], timestamp = parts[2];
+      const fileName = `Jegyzet_${namePart}_${getFormattedDate()}.json`;
+      const data = { name: namePart, intro, timestamp, content: editor.innerHTML, color: activeColorClass };
+      const t = db.transaction("notes", "readwrite");
+      t.objectStore("notes").put(data);
+      t.oncomplete = () => {
+        loadFromDB();
+        const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+        const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = fileName; a.click();
+        lastFileDisplay.innerHTML = `<span class="label-red">Utolsó fájl:</span> <span class="label-green">${fileName}</span>`;
+      };
     }
-    function hardReset() { if (confirm("MINDEN TÖRLŐDIK!")) { const tx = db.transaction("notes", "readwrite"); tx.objectStore("notes").clear(); tx.oncomplete = () => location.reload(); } }
-    function clearList() { if (confirm("Lista ürítése?")) { const tx = db.transaction("notes", "readwrite"); tx.objectStore("notes").clear(); tx.oncomplete = () => loadFromDB(); } }
-    function insertLink() { const url = linkInput.value; if (url) document.execCommand('createLink', false, url); }
+
+    async function downloadPDF(isColor) {
+      const { jsPDF } = window.jspdf;
+      const helperWrap = document.getElementById("pdf-helper-wrap");
+      const captureNode = document.createElement("div");
+      captureNode.className = "pdf-capture-node";
+      const isLight = document.body.classList.contains("light-mode");
+      const bg = (isColor && !isLight) ? "#050505" : "#ffffff";
+      captureNode.style.background = bg;
+      captureNode.appendChild(editorHeader.cloneNode(true));
+      captureNode.appendChild(editor.cloneNode(true));
+      if (!isColor) { captureNode.querySelectorAll("span, a, div").forEach(el => { el.style.setProperty("color", "black", "important"); el.style.setProperty("text-shadow", "none", "important"); }); captureNode.style.color = "black"; }
+      helperWrap.innerHTML = ""; helperWrap.appendChild(captureNode);
+      html2canvas(captureNode, { backgroundColor: bg, scale: 2 }).then(canvas => {
+        const imgWidth = 210; const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        const pdf = new jsPDF('p', 'mm', [imgWidth, imgHeight]); pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, imgWidth, imgHeight);
+        pdf.save(`jegyzet_${getFormattedDate()}.pdf`); helperWrap.innerHTML = "";
+      });
+    }
+
+    function downloadPNG(transparent) {
+      const originalBg = captureArea.style.background; const originalBorder = captureArea.style.borderColor;
+      if (transparent) { captureArea.style.background = "transparent"; captureArea.style.borderColor = "transparent"; }
+      html2canvas(captureArea, { backgroundColor: null, scale: 2 }).then(canvas => {
+        captureArea.style.background = originalBg; captureArea.style.borderColor = originalBorder;
+        const a = document.createElement("a"); a.download = `jegyzet_${Date.now()}.png`; a.href = canvas.toDataURL("image/png"); a.click();
+      });
+    }
+
+    function exportNotes() {
+      if (notes.length === 0) { alert("Nincs mit exportálni!"); return; }
+      const exportName = prompt("Export fájl neve:", "Osszes_Jegyzet_Export"); if (exportName === null) return;
+      const blob = new Blob([JSON.stringify(notes)], { type: 'application/json' }); const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `${exportName}_${getFormattedDate()}.json`; a.click();
+    }
+
+    function importNotes() { const input = document.createElement("input"); input.type = "file"; input.accept = ".json"; input.onchange = e => { const file = e.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = ev => { try { const imported = JSON.parse(ev.target.result); const t = db.transaction("notes", "readwrite"); const store = t.objectStore("notes"); if (Array.isArray(imported)) imported.forEach(n => store.put(n)); else store.put(imported); t.oncomplete = () => { loadFromDB(); alert("Importálva!"); }; } catch (err) { alert("Hiba!"); } }; reader.readAsText(file); }; input.click(); }
+    function addSavedItemToUI(name, date, color) { const div = document.createElement("div"); div.className = "saved-item"; div.innerHTML = `<span class="${color}">${name} - ${date}</span>`; div.onclick = () => { const found = notes.find(n => n.name === name && n.timestamp === date); if (found) { editor.innerHTML = found.content; editorHeader.innerHTML = `<span class="${found.color}">${found.intro} - ${found.name} - ${found.timestamp}</span>`; setRecordedTime(found.timestamp); } }; savedList.appendChild(div); }
+    function loadNote() { const name = prompt("Keresett név:"); const found = notes.find(n => n.name === name); if (found) { editor.innerHTML = found.content; editorHeader.innerHTML = `<span class="${found.color}">${found.intro} - ${found.name} - ${found.timestamp}</span>`; setRecordedTime(found.timestamp); } }
+    function newNote() { editor.innerHTML = ""; editorHeader.innerHTML = ""; setRecordedTime(""); }
+    // function deleteNote(){ if(confirm("Törli?")) newNote(); } 
+    function clearList() { if (confirm("Üríti a listát?")) { const t = db.transaction("notes", "readwrite"); t.objectStore("notes").clear(); t.oncomplete = () => { notes = []; savedList.innerHTML = ""; updateStorageStatus(); setRecordedTime(""); }; } }
 
     function deleteNote() {
-      const currentName = editorHeader.innerText;
+      const headerText = editorHeader.innerText;
+      const parts = headerText.split(" - ");
 
-      if (!currentName || currentName === "") {
-        alert("Nincs kiválasztott vagy elnevezett jegyzet a törléshez.");
+      if (parts.length < 3) {
+        alert("Nincs kiválasztott mentett jegyzet, amit törölni lehetne.");
         return;
       }
 
-      if (confirm(`Biztosan törlöd a(z) "${currentName}" nevű jegyzetet a mentettek közül?`)) {
-        // Megkeressük a jegyzetet a memóriában lévő listában név alapján
-        const foundNote = notes.find(n => n.name === currentName);
+      const namePart = parts[1];
+      const timestampPart = parts[2];
 
-        if (foundNote && foundNote.id) {
+      if (confirm("Biztosan törlöd ezt a jegyzetet a mentettek közül?")) {
+        const foundIndex = notes.findIndex(n => n.name === namePart && n.timestamp === timestampPart);
+
+        if (foundIndex !== -1) {
+          const noteId = notes[foundIndex].id;
+
           const transaction = db.transaction("notes", "readwrite");
           const store = transaction.objectStore("notes");
-
-          // Törlés az adatbázisból az ID alapján
-          const request = store.delete(foundNote.id);
+          store.delete(noteId);
 
           transaction.oncomplete = () => {
-            loadFromDB(); // Lista frissítése a képernyőn
-            newNote();    // Szerkesztőfelület ürítése
-            alert("Jegyzet sikeresen törölve a memóriából.");
-          };
-
-          transaction.onerror = () => {
-            alert("Hiba történt a törlés során.");
+            loadFromDB();
+            newNote();
+            alert("Jegyzet sikeresen törölve.");
           };
         } else {
-          alert("Ez a jegyzet még nincs mentve az adatbázisba, vagy a neve megváltozott.");
+          alert("A jegyzet nem található a memóriában.");
         }
       }
     }
+
+
   </script>
 </body>
 
